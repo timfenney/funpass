@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    crypt (1.1.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  crypt
