@@ -1,4 +1,6 @@
 source "https://rubygems.org"
-ruby '2.1.0'
 
-gem 'crypt'
+gem 'rspec'
+gem 'fakefs', require: 'fakefs/safe'
+gem 'base62'
+gem 'thor'

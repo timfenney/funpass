@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require_relative '../lib/funpass'
+
+
+Signal.trap('INT') { exit 1 }
+
+class FunPassCLI < Thor
+  desc 'init', 'initialize funpass folder'
+  option :secret
+  def init
+    try_with_recovery_message '~/.funpass already exists. scrunch it first.' do
+      FunPass.init options[:secret]
+    end
+  end
+
+  desc 'scrunch', 'destroy funpass folder'
+  option :force, type: :boolean
+  def scrunch
+    begin
+      scrunch_if_confirmed options
+    rescue
+      Store.scrub
+    end
+  end
+
+  desc 'gen TOKEN', 'generate password as a function of the TOKEN and your key'
+  def gen token
+    try_with_recovery_message "~/.funpass/secret doesn't exist. init first." do
+      password = PasswordGenerator.gen token
+      puts "#{token} => #{password}"
+    end
+  end
+
+  private
+
+  def scrunch_if_confirmed options
+    if options[:force] || scrunch_prompt_for_confirmation
+      puts 'Scrunching up your funpass...'
+      Store.scrunch
+    else
+      puts 'Operation not confirmed. NOT removing...'
+    end
+  end
+
+  def scrunch_prompt_for_confirmation
+    puts "Put on your radiation-proof bikini."
+    puts "Your funpass folder is about to be removed!"
+    print "Continue? (yes|no = anything else) >"
+    $stdin.gets.chomp == 'yes'
+  end
+
+  def try_with_recovery_message(message)
+    begin
+      yield
+    rescue
+      abort(message)
+    end
+  end
+end
+
+FunPassCLI.start(ARGV)
