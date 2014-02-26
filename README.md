@@ -25,10 +25,10 @@ machine is to install funpass, and plug in my secret key file.
 
 ## Usage
 
-`ruby funpass.rb init` will init your ~/.funpass/secret file. You may destroy
-it with `ruby funpass.rb scrunch`. After init'ing your secret key file,
+`funpass init` will init your ~/.funpass/secret file. You may destroy
+it with `funpass scrunch`. After init'ing your secret key file,
 you may generate new (or regenerate old!) passwords with
-`ruby funpass.rb gen username@somedomain.com`. (Really, any argument may be
+`funpass gen username@somedomain.com`. (Really, any argument may be
 supplied to `gen`; but make sure you can supply the same argument next
 time!)
 
