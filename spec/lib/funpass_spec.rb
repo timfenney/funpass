@@ -1,32 +1,6 @@
 require_relative '../spec_helper.rb'
 require_relative '../../lib/funpass'
 
-module MakeSure
-  def self.the_funpass_folder_does_not_exist
-    begin
-      FileUtils.rm_r FUNPASS_DIR
-    rescue
-    end
-  end
-
-  def self.the_funpass_folder_is_empty
-    the_funpass_folder_does_not_exist
-    Dir.mkdir FUNPASS_DIR
-  end
-
-  def self.the_funpass_folder_contains_secret
-    the_funpass_folder_is_empty
-    FileUtils.touch SECRET_FILE
-  end
-
-  def self.the_secret_file_correctly_exists
-    the_funpass_folder_is_empty
-    File.open(SECRET_FILE, 'w') do |secret_file|
-      secret_file.write '1234'
-    end
-  end
-end
-
 describe FunPass do
   include MakeSure
 
@@ -40,6 +14,8 @@ describe FunPass do
     end
 
     context 'when funpass folder does not exist' do
+      before(:each) { MakeSure.the_funpass_folder_does_not_exist }
+
       it 'creates the funpass folder' do
         FunPass.init
         expect(File.directory?(FUNPASS_DIR)).to be_true
@@ -73,7 +49,7 @@ describe FunPass do
       it 'generates a different secret file two times in a row' do
         FunPass.init
         first_secret = read_secret_file
-        funpass_setup
+        MakeSure.the_funpass_folder_does_not_exist
         FunPass.init
         second_secret = read_secret_file
         expect(second_secret).not_to equal(first_secret)

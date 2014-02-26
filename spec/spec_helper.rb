@@ -21,4 +21,29 @@ def funpass_setup
   FileUtils.mkdir_p Dir.home
 end
 
+module MakeSure
+  def self.the_funpass_folder_does_not_exist
+    begin
+      FileUtils.rm_r FUNPASS_DIR
+    rescue
+    end
+  end
+
+  def self.the_funpass_folder_is_empty
+    the_funpass_folder_does_not_exist
+    Dir.mkdir FUNPASS_DIR
+  end
+
+  def self.the_funpass_folder_contains_secret
+    the_funpass_folder_is_empty
+    FileUtils.touch SECRET_FILE
+  end
+
+  def self.the_secret_file_correctly_exists
+    the_funpass_folder_is_empty
+    File.open(SECRET_FILE, 'w') do |secret_file|
+      secret_file.write '1234'
+    end
+  end
+end
 
